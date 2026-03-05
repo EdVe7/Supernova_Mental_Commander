@@ -49,36 +49,6 @@ if not st.session_state["authenticated"]:
 COLUMNS = ["Data", "Torneo", "Score", "Accettazione", "Routine", "Decisione", "Focus", "Energia", "Tensione", "Note"]
 
 # ==============================================================================
-# 2. SPLASH SCREEN & LOGIN
-# ==============================================================================
-if "mind_splash" not in st.session_state:
-    placeholder = st.empty()
-    with placeholder.container():
-        st.markdown("<br><br><br>", unsafe_allow_html=True)
-        try:
-            st.image("logo.png", use_container_width=True)
-        except:
-            st.markdown(f"<h1 style='text-align:center; font-size:4rem; color:{COLORS['Teal']};'>V.V.L. MIND LAB</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; font-weight:bold;'>Mental Performance Training - Road to 2040</p>", unsafe_allow_html=True)
-    time.sleep(2)
-    placeholder.empty()
-    st.session_state["mind_splash"] = True
-
-if "logged_in" not in st.session_state:
-    st.session_state["logged_in"] = False
-
-if not st.session_state["logged_in"]:
-    st.markdown(f"<h3 style='text-align:center; color:{COLORS['Teal']}'>Area Riservata Performance</h3>", unsafe_allow_html=True)
-    pwd = st.text_input("Inserisci Password Olimpica", type="password")
-    if st.button("ACCEDI"):
-        if pwd == "olimpiadi2040":
-            st.session_state["logged_in"] = True
-            st.rerun()
-        else:
-            st.error("Credenziali respinte.")
-    st.stop()
-
-# ==============================================================================
 # 3. DATA ENGINE (Google Sheets)
 # ==============================================================================
 @st.cache_data(ttl=5)
@@ -237,4 +207,5 @@ with tab_an:
                 st.dataframe(df_f.sort_values(by="Data", ascending=False), hide_index=True)
         else:
             st.warning("Nessun dato trovato per il periodo selezionato.")
+
 
