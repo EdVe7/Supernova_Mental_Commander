@@ -6,31 +6,45 @@ import datetime
 from streamlit_gsheets import GSheetsConnection
 from fpdf import FPDF
 
-# ==============================================================================
-# 1. CONFIGURAZIONE E DESIGN (Suite V.V.L.)
-# ==============================================================================
-st.set_page_config(page_title="V.V.L. Mind Lab", page_icon="🧠", layout="centered")
+# --- CONFIGURAZIONE PAGINA ---
+st.set_page_config(page_title="Supernova Fatigue Lab", page_icon="🚀")
 
-COLORS = {
-    'Teal': '#3AB4B8',
-    'Dark': '#1f2937',
-    'Grey': '#F3F4F6',
-    'White': '#FFFFFF'
-}
-
-st.markdown(f"""
+# CSS per pulizia interfaccia
+st.markdown("""
     <style>
-    #MainMenu {{visibility: hidden;}}
-    header {{visibility: hidden;}}
-    footer {{visibility: hidden;}}
-    .block-container {{ padding-top: 2rem; }}
-    .stApp {{ background-color: {COLORS['White']}; color: {COLORS['Dark']}; }}
-    h1, h2, h3 {{ color: {COLORS['Teal']}; font-family: 'Helvetica', sans-serif; }}
-    .stButton>button {{ background-color: {COLORS['Teal']}; color: white; border-radius: 8px; font-weight: bold; width: 100%; border: none; padding: 10px; }}
-    .stButton>button:hover {{ background-color: #2A8285; }}
-    .vision-box {{ background-color: {COLORS['Grey']}; padding: 20px; border-left: 5px solid {COLORS['Teal']}; border-radius: 5px; margin-bottom: 20px; }}
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    .stDeployButton {display:none;}
     </style>
     """, unsafe_allow_html=True)
+
+# SPLASH SCREEN SUPERNOVA
+if 'splash_done' not in st.session_state:
+    placeholder = st.empty()
+    with placeholder.container():
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        try:
+            st.image("logo.png", use_container_width=True)
+        except:
+            st.markdown("<h1 style='text-align:center; color:#FF9800;'>SUPERNOVA</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center;'>Powered by Supernova Sport Science</p>", unsafe_allow_html=True)
+    time.sleep(5) 
+    placeholder.empty()
+    st.session_state['splash_done'] = True # Segna lo splash come fatto
+
+# SISTEMA DI LOGIN
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    st.markdown("<h2 style='text-align:center;'>Accesso Riservato</h2>", unsafe_allow_html=True)
+    pwd = st.text_input("Inserisci la Password", type="password")
+    if st.button("ENTRA NEL LAB"):
+        if pwd == "supernova26":
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("Password errata.")
+    st.stop()
 
 COLUMNS = ["Data", "Torneo", "Score", "Accettazione", "Routine", "Decisione", "Focus", "Energia", "Tensione", "Note"]
 
@@ -223,3 +237,4 @@ with tab_an:
                 st.dataframe(df_f.sort_values(by="Data", ascending=False), hide_index=True)
         else:
             st.warning("Nessun dato trovato per il periodo selezionato.")
+
